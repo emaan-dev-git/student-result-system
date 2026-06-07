@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h2>👨‍🎓 All Students</h2>
+  <a class="btn green" href="/add-student">➕ Add Student</a>
+</div>
+
+<!-- Search Bar -->
+<form method="GET" action="/" class="search-form">
+  <input type="text" name="search" placeholder="🔍 Search by Name or Roll No..."
+         value="{{ search }}">
+  <button type="submit">Search</button>
+  {% if search %}
+    <a href="/" class="btn red">✖ Clear</a>
+  {% endif %}
+</form>
+
+{% if students %}
+<table>
+  <thead>
+    <tr>
+      <th>#</th><th>Name</th><th>Roll No</th>
+      <th>Class</th><th>Section</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in students %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td><strong>{{ s.name }}</strong></td>
+      <td>{{ s.roll_no }}</td>
+      <td>{{ s.cls }}</td>
+      <td>{{ s.section }}</td>
+      <td>
+        <a class="btn green" href="/add-marks/{{ s.id }}">📝 Add Marks</a>
+        <a class="btn blue"  href="/result/{{ s.id }}">📊 Result</a>
+        <a class="btn red"   href="/delete/{{ s.id }}"
+           onclick="return confirm('Are you sure you want to delete this student?')">🗑 Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p class="empty">
+    {% if search %}
+      No student found for "{{ search }}". <a href="/">Show All</a>
+    {% else %}
+      No students found. Please add a student first!
+    {% endif %}
+  </p>
+{% endif %}
+
+{% endblock %}

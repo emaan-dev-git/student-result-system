@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if no_results %}
+  <div class="form-box">
+    <h2>📊 Result — {{ student.name }}</h2>
+    <div class="alert warning">⚠️ No marks added yet. Please add marks first.</div>
+    <a class="btn green" href="/add-marks/{{ student.id }}">📝 Add Marks</a>
+    <a class="btn blue"  href="/">← Back</a>
+  </div>
+{% else %}
+
+<div class="result-box">
+  <!-- Header -->
+  <div class="result-header">
+    <h2>🎓 Result Card</h2>
+    <a class="btn blue" href="/download-pdf/{{ student.id }}">⬇️ Download PDF</a>
+  </div>
+
+  <!-- Student Info -->
+  <div class="info-grid">
+    <div><span>Name</span><strong>{{ student.name }}</strong></div>
+    <div><span>Roll No</span><strong>{{ student.roll_no }}</strong></div>
+    <div><span>Class</span><strong>{{ student.cls }}</strong></div>
+    <div><span>Section</span><strong>{{ student.section }}</strong></div>
+  </div>
+
+  <!-- Marks Table -->
+  <table>
+    <thead>
+      <tr><th>Subject</th><th>Obtained</th><th>Total</th><th>%</th></tr>
+    </thead>
+    <tbody>
+      {% for r in results %}
+      {% set subj_pct = ((r.marks_obtained / r.total_marks) * 100) | round(1) %}
+      <tr>
+        <td>{{ r.subject }}</td>
+        <td>{{ r.marks_obtained }}</td>
+        <td>{{ r.total_marks }}</td>
+        <td>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:{{ subj_pct }}%"></div>
+            <span>{{ subj_pct }}%</span>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td><strong>TOTAL</strong></td>
+        <td><strong>{{ total_obtained }}</strong></td>
+        <td><strong>{{ total_marks }}</strong></td>
+        <td><strong>{{ percentage }}%</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <!-- Summary -->
+  <div class="summary-cards">
+    <div class="card">
+      <span>Percentage</span>
+      <strong>{{ percentage }}%</strong>
+    </div>
+    <div class="card" style="background:{{ grade_color }}">
+      <span>Grade</span>
+      <strong>{{ grade }}</strong>
+    </div>
+    <div class="card {% if status == 'PASS' %}pass{% else %}fail{% endif %}">
+      <span>Status</span>
+      <strong>{{ status }}</strong>
+    </div>
+  </div>
+
+  <!-- Bar Chart -->
+  <div class="chart-section">
+    <h3>📊 Performance Chart</h3>
+    <canvas id="marksChart"></canvas>
+  </div>
+
+  <div class="result-actions">
+    <a class="btn blue"  href="/download-pdf/{{ student.id }}">⬇️ Download PDF</a>
+    <a class="btn green" href="/add-marks/{{ student.id }}">✏️ Edit Marks</a>
+    <a class="btn gray"  href="/">← Back to Home</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('marksChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ chart_data.subjects | tojson }},
+      datasets: [
+        {
+          label: 'Obtained',
+          data: {{ chart_data.obtained | tojson }},
+          backgroundColor: '#1a73e8',
+          borderRadius: 6
+        },
+        {
+          label: 'Total',
+          data: {{ chart_data.total | tojson }},
+          backgroundColor: '#e8f0fe',
+          borderRadius: 6
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'top' } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+
+{% endif %}
+{% endblock %}

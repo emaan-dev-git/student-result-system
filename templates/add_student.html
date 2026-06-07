@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="form-box">
+  <h2>➕ Add New Student</h2>
+  <form method="POST">
+    <label>Student Name</label>
+    <input type="text" name="name" placeholder="e.g. Ali Ahmed" required>
+
+    <label>Roll Number</label>
+    <input type="text" name="roll_no" placeholder="e.g. 101" required>
+
+    <label>Class</label>
+    <input type="text" name="cls" placeholder="e.g. 10th" required>
+
+    <label>Section</label>
+    <input type="text" name="section" placeholder="e.g. A" required>
+
+    <button type="submit">Save Student</button>
+  </form>
+</div>
+
+{% endblock %}

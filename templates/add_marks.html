@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="form-box wide">
+  <h2>📝 Add Marks — {{ student.name }}</h2>
+  <p class="sub">Roll No: <strong>{{ student.roll_no }}</strong> | Class: <strong>{{ student.cls }}-{{ student.section }}</strong></p>
+
+  {% if error %}
+    <div class="alert error">{{ error }}</div>
+  {% endif %}
+
+  <form method="POST">
+    <div class="marks-header">
+      <span>Subject</span>
+      <span>Marks Obtained</span>
+      <span>Total Marks</span>
+    </div>
+
+    {% set subjects = ['Mathematics', 'English', 'Science', 'Urdu', 'Computer'] %}
+    {% for i in range(5) %}
+    <div class="subject-row">
+      <input type="text" name="subject"
+             value="{{ existing[i].subject if existing and i < existing|length else subjects[i] }}"
+             placeholder="Subject" required>
+      <input type="number" name="marks" min="0"
+             value="{{ existing[i].marks_obtained if existing and i < existing|length else '' }}"
+             placeholder="Obtained" required>
+      <input type="number" name="total" min="1"
+             value="{{ existing[i].total_marks if existing and i < existing|length else '100' }}"
+             placeholder="Total" required>
+    </div>
+    {% endfor %}
+
+    <button type="submit">💾 Save Marks</button>
+    <a href="/" class="btn-cancel">Cancel</a>
+  </form>
+</div>
+
+{% endblock %}
